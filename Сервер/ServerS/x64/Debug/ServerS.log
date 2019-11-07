@@ -1,3 +1,1 @@
-﻿  ServerS.cpp
-D:\University\3 сем\ЯПиТК\Курсовая\P-159\Сервер\ServerS\ServerS.cpp(81,79): warning C4312:  приведение типов: преобразование из "int" в "LPVOID" большего размера
-  ServerS.vcxproj -> D:\University\3 сем\ЯПиТК\Курсовая\P-159\Сервер\x64\Debug\ServerS.exe
+﻿sfml-graphics-d.lib(sfml-graphics-d-2.dll) : fatal error LNK1112: тип компьютера модуля "x86" противоречит типу целевого компьютера "x64"
