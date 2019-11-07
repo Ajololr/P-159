@@ -1,5 +1,3 @@
-#include <fmx.h>
-#ifdef _WIN32
+#include <vcl.h>
 #include <tchar.h>
-#endif
 

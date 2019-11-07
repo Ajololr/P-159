@@ -1,32 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.612,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1.cbproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.515,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\InterfaceUnit.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.997,C:\Users\User\Documents\Embarcadero\Studio\Projects\InterfaceUnit.fmx=D:\University\3 сем\ЯПиТК\Курсовая\P-159\InterfaceUnit.fmx</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.515,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp=C:\Users\User\Documents\Embarcadero\Studio\Projects\InterfaceUnit.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.941,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.572,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h=D:\University\3 сем\ЯПиТК\Курсовая\P-159\P-159PCH1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.997,C:\Users\User\Documents\Embarcadero\Studio\Projects\InterfaceUnit.cpp=D:\University\3 сем\ЯПиТК\Курсовая\P-159\InterfaceUnit.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.515,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.fmx=C:\Users\User\Documents\Embarcadero\Studio\Projects\InterfaceUnit.fmx</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.997,C:\Users\User\Documents\Embarcadero\Studio\Projects\InterfaceUnit.h=D:\University\3 сем\ЯПиТК\Курсовая\P-159\InterfaceUnit.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.602,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.731,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.729,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj=D:\University\3 сем\ЯПиТК\Курсовая\P-159\P-159.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.058,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h=D:\University\3 сем\ЯПиТК\Курсовая\1\P-159PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.137,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.570,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1.cbproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.628,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.dfm=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.628,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.cpp=D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.770,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.925,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.907,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.627,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.880,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj=D:\University\3 сем\ЯПиТК\Курсовая\1\P-159.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.dfm=D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.h=D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.628,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.h=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.179,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.566,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h</Transaction>
   </Transactions>
-	<ProjectSortOrder AutoSort="0" SortType="0">
-    <File Path="android-support-v4.dex.jar"/>
-    <File Path="cloud-messaging.dex.jar"/>
-    <File Path="fmx.dex.jar"/>
-    <File Path="google-analytics-v2.dex.jar"/>
-    <File Path="google-play-billing.dex.jar"/>
-    <File Path="google-play-licensing.dex.jar"/>
-    <File Path="google-play-services.dex.jar"/>
-    <File Path="P-159.cpp"/>
-    <File Path="InterfaceUnit.cpp"/>
-    <File Path="InterfaceUnit.cpp"/>
-    <File Path="InterfaceUnit.fmx"/>
-    <File Path="InterfaceUnit.h"/>
-    <File Path="P-159PCH1.h"/>
-  </ProjectSortOrder>
 </BorlandProject>

@@ -1,4 +1,3 @@
-﻿  stdafx.cpp
-  ServerS.cpp
-D:\University\3 сем\Lessons\2\Server\ServerS\ServerS.cpp(55,79): warning C4312:  приведение типов: преобразование из "int" в "LPVOID" большего размера
-  ServerS.vcxproj -> D:\University\3 сем\Lessons\2\Server\x64\Debug\ServerS.exe
+﻿  ServerS.cpp
+D:\University\3 сем\ЯПиТК\Курсовая\P-159\Сервер\ServerS\ServerS.cpp(81,79): warning C4312:  приведение типов: преобразование из "int" в "LPVOID" большего размера
+  ServerS.vcxproj -> D:\University\3 сем\ЯПиТК\Курсовая\P-159\Сервер\x64\Debug\ServerS.exe
