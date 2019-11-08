@@ -218,7 +218,7 @@ object MainForm: TMainForm
     Top = 80
     Width = 109
     Height = 33
-    Caption = #1053#1072#1095#1072#1090#1100
+    Caption = #1047#1072#1087#1080#1089#1100
     TabOrder = 3
     OnClick = Button1Click
   end
@@ -227,7 +227,7 @@ object MainForm: TMainForm
     Top = 136
     Width = 109
     Height = 33
-    Caption = #1054#1089#1090#1072#1085#1086#1074#1080#1090#1100
+    Caption = #1055#1088#1080#1105#1084
     TabOrder = 4
   end
   object MediaPlayer1: TMediaPlayer

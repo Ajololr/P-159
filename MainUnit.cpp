@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
-
 #pragma warning(disable: 4996)
 
 //---------------------------------------------------------------------------
@@ -24,106 +23,14 @@
 TMainForm *MainForm;
 
 //---------------------------------------------------------------------------
+
 SOCKET Connection;
+SOCKET ConnectSocket = INVALID_SOCKET;
 
 enum Packet
 {
-	P_Key,
-    P_Sound
-};
-
-bool ProcessPacket(Packet packettype) {
-	switch(packettype) {
-		case P_Key:
-		{
-			PlaySound(TEXT("SystemStart"), NULL, SND_ASYNC);
-			break;
-		}
-		case P_Sound:
-		{
-			PlaySound(TEXT("SystemStart"), NULL, SND_ASYNC);
-			break;
-		}
-		default:
-			std::cout << "Unrecognized packet: " << packettype << std::endl;
-			break;
-	}
-
-	return true;
-}
-
-void ClientHandler() {
-	Packet packettype;
-	while(true) {
-		recv(Connection, (char*)&packettype, sizeof(Packet), NULL);
-
-		if(!ProcessPacket(packettype)) {
-			break;
-		}
-	}
-	closesocket(Connection);
-}
-
-__fastcall TMainForm::TMainForm(TComponent* Owner)
-	: TForm(Owner)
-{
-}
-//---------------------------------------------------------------------------
-
-SOCKET ConnectSocket = INVALID_SOCKET;
-
-void __fastcall TMainForm::FormCreate(TObject *Sender)
-{
-	WSAData wsaData;
-	WORD DLLVersion = MAKEWORD(2, 1);
-	if(WSAStartup(DLLVersion, &wsaData) != 0) {
-		std::cout << "Error" << std::endl;
-		exit(1);
-	}
-
-	SOCKADDR_IN addr;
-	int sizeofaddr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("192.168.100.3");
-	addr.sin_port = htons(4980);
-	addr.sin_family = AF_INET;
-
-	Connection = socket(AF_INET, SOCK_STREAM, NULL);
-	if(connect(Connection, (SOCKADDR*)&addr, sizeof(addr)) != 0) {
-		std::cout << "Error: failed connect to server.\n";
-	}
-	std::cout << "Connected!\n";
-
-	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandler, NULL, NULL, NULL);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TMainForm::ButtonClick(TObject *Sender)
-{
-	Packet packettype = P_Key;
-	send(Connection, (char*)&packettype, sizeof(Packet), NULL);
-	Sleep(10);
-}
-
-//---------------------------------------------------------------------------
-
-//Maximum number of supported recording devices
-const int MAX_RECORDING_DEVICES = 10;
-
-//Maximum recording time
-const int MAX_RECORDING_SECONDS = 1;
-
-//Maximum recording time plus padding
-const int RECORDING_BUFFER_SECONDS = MAX_RECORDING_SECONDS + 1;
-
-//The various recording actions we can take
-enum RecordingState
-{
-	SELECTING_DEVICE,
-	STOPPED,
-	RECORDING,
-	RECORDED,
-	PLAYBACK,
-	AUDIO_ERROR
+	P_KEY,
+	P_AUDIO
 };
 
 //Number of available devices
@@ -144,6 +51,30 @@ Uint32 gBufferBytePosition = 0;
 
 //Maximum position in data buffer for recording
 Uint32 gBufferByteMaxPosition = 0;
+
+//Audio device IDs
+SDL_AudioDeviceID recordingDeviceId = 0;
+SDL_AudioDeviceID playbackDeviceId = 0;
+
+//Maximum number of supported recording devices
+const int MAX_RECORDING_DEVICES = 10;
+
+//Maximum recording time
+const int MAX_RECORDING_SECONDS = 1;
+
+//Maximum recording time plus padding
+const int RECORDING_BUFFER_SECONDS = MAX_RECORDING_SECONDS + 1;
+
+//The various recording actions we can take
+enum RecordingState
+{
+	SETTING_DEVICE,
+	START_RECORDING,
+	RECORDING,
+	START_PLAYBACK,
+	PLAYBACK,
+	AUDIO_ERROR
+};
 
 void audioRecordingCallback( void* userdata, Uint8* stream, int len )
 {
@@ -189,9 +120,100 @@ bool loadMedia()
 	return success;
 }
 
-int start()
+bool ProcessPacket(Packet packettype) {
+	switch(packettype) {
+		case P_KEY:
+		{
+			PlaySound(TEXT("SystemStart"), NULL, SND_ASYNC);
+			break;
+		}
+		case P_AUDIO:
+		{
+			unsigned long int msg_size;
+			recv(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
+			recv(Connection, gRecordingBuffer, msg_size, NULL);
+
+			//Main loop flag
+			bool quit = false;
+
+			//Go on to next state
+			gBufferBytePosition = 0;
+
+			//Start playback
+			SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
+
+			while (!quit)
+			{
+				//Lock callback
+				SDL_LockAudioDevice( playbackDeviceId );
+
+				//Finished playback
+				if( gBufferBytePosition > gBufferByteMaxPosition )
+				{
+					//Stop playing audio
+					SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
+
+					//Go on to next message
+					quit = true;
+				}
+
+				//Unlock callback
+				SDL_UnlockAudioDevice( playbackDeviceId );
+            }
+
+
+			//delete[] msg;
+			break;
+		}
+		default:
+			std::cout << "Unrecognized packet: " << packettype << std::endl;
+			break;
+	}
+
+	return true;
+}
+
+void ClientHandler() {
+	Packet packettype;
+	while(true) {
+		recv(Connection, (char*)&packettype, sizeof(Packet), NULL);
+
+		if(!ProcessPacket(packettype)) {
+			break;
+		}
+	}
+	closesocket(Connection);
+}
+
+__fastcall TMainForm::TMainForm(TComponent* Owner)
+	: TForm(Owner)
 {
-	//Start up SDL and create window
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::FormCreate(TObject *Sender)
+{
+	WSAData wsaData;
+	WORD DLLVersion = MAKEWORD(2, 1);
+	if(WSAStartup(DLLVersion, &wsaData) != 0) {
+		std::cout << "Error" << std::endl;
+		exit(1);
+	}
+
+	SOCKADDR_IN addr;
+	int sizeofaddr = sizeof(addr);
+	addr.sin_addr.s_addr = inet_addr("192.168.100.3");
+	addr.sin_port = htons(4980);
+	addr.sin_family = AF_INET;
+
+	Connection = socket(AF_INET, SOCK_STREAM, NULL);
+	if(connect(Connection, (SOCKADDR*)&addr, sizeof(addr)) != 0) {
+		std::cout << "Error: failed connect to server.\n";
+	}
+	std::cout << "Connected!\n";
+
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandler, NULL, NULL, NULL);
+
 	if(SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0)
 	{
 		printf( "Failed to initialize!\n" );
@@ -208,217 +230,171 @@ int start()
 			//Main loop flag
 			bool quit = false;
 
-			//Set the default recording state
-			RecordingState currentState = SELECTING_DEVICE;
+			//Get selection index
+			int index = 0;
 
-			//Audio device IDs
-			SDL_AudioDeviceID recordingDeviceId = 0;
-			SDL_AudioDeviceID playbackDeviceId = 0;
+			//Default audio spec
+			SDL_AudioSpec desiredRecordingSpec;
+			SDL_zero(desiredRecordingSpec);
+			desiredRecordingSpec.freq = 44100;
+			desiredRecordingSpec.format = AUDIO_F32;
+			desiredRecordingSpec.channels = 2;
+			desiredRecordingSpec.samples = 4096;
+			desiredRecordingSpec.callback = audioRecordingCallback;
 
-			//While application is running
-			while( !quit )
+			//Open recording device
+			recordingDeviceId = SDL_OpenAudioDevice( SDL_GetAudioDeviceName( index, SDL_TRUE ), SDL_TRUE, &desiredRecordingSpec, &gReceivedRecordingSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
+
+			//Device failed to open
+			if( recordingDeviceId == 0 )
 			{
-				//Do current state event handling
-				switch( currentState )
+				//Report error
+				printf( "Failed to open recording device! SDL Error: %s", SDL_GetError() );
+				printf( "Failed to open recording device!");
+			}
+			//Device opened successfully
+			else
+			{
+				//Default audio spec
+				SDL_AudioSpec desiredPlaybackSpec;
+				SDL_zero(desiredPlaybackSpec);
+				desiredPlaybackSpec.freq = 44100;
+				desiredPlaybackSpec.format = AUDIO_F32;
+				desiredPlaybackSpec.channels = 2;
+				desiredPlaybackSpec.samples = 4096;
+				desiredPlaybackSpec.callback = audioPlaybackCallback;
+
+				//Open playback device
+				playbackDeviceId = SDL_OpenAudioDevice( NULL, SDL_FALSE, &desiredPlaybackSpec, &gReceivedPlaybackSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
+
+				//Device failed to open
+				if( playbackDeviceId == 0 )
 				{
-					//User is selecting recording device
-					case SELECTING_DEVICE:
-
-						//On key press
-						if( true )
-						{
-							//Handle key press from 0 to 9
-							if(true )
-							{
-								//Get selection index
-								int index = 1;
-
-								//Index is valid
-								if( index < gRecordingDeviceCount )
-								{
-									//Default audio spec
-									SDL_AudioSpec desiredRecordingSpec;
-									SDL_zero(desiredRecordingSpec);
-									desiredRecordingSpec.freq = 44100;
-									desiredRecordingSpec.format = AUDIO_F32;
-									desiredRecordingSpec.channels = 2;
-									desiredRecordingSpec.samples = 4096;
-									desiredRecordingSpec.callback = audioRecordingCallback;
-
-									//Open recording device
-									recordingDeviceId = SDL_OpenAudioDevice( SDL_GetAudioDeviceName( index, SDL_TRUE ), SDL_TRUE, &desiredRecordingSpec, &gReceivedRecordingSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
-
-									//Device failed to open
-									if( recordingDeviceId == 0 )
-									{
-										//Report error
-										printf( "Failed to open recording device! SDL Error: %s", SDL_GetError() );
-										printf( "Failed to open recording device!");
-										currentState = ERROR;
-									}
-									//Device opened successfully
-									else
-									{
-										//Default audio spec
-										SDL_AudioSpec desiredPlaybackSpec;
-										SDL_zero(desiredPlaybackSpec);
-										desiredPlaybackSpec.freq = 44100;
-										desiredPlaybackSpec.format = AUDIO_F32;
-										desiredPlaybackSpec.channels = 2;
-										desiredPlaybackSpec.samples = 4096;
-										desiredPlaybackSpec.callback = audioPlaybackCallback;
-
-										//Open playback device
-										playbackDeviceId = SDL_OpenAudioDevice( NULL, SDL_FALSE, &desiredPlaybackSpec, &gReceivedPlaybackSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
-
-										//Device failed to open
-										if( playbackDeviceId == 0 )
-										{
-											//Report error
-											printf( "Failed to open playback device! SDL Error: %s", SDL_GetError() );
-											printf( "Failed to open playback device!");
-											currentState = ERROR;
-										}
-										//Device opened successfully
-										else
-										{
-											//Calculate per sample bytes
-											int bytesPerSample = gReceivedRecordingSpec.channels * ( SDL_AUDIO_BITSIZE( gReceivedRecordingSpec.format ) / 8 );
-
-											//Calculate bytes per second
-											int bytesPerSecond = gReceivedRecordingSpec.freq * bytesPerSample;
-
-											//Calculate buffer size
-											gBufferByteSize = RECORDING_BUFFER_SECONDS * bytesPerSecond;
-
-											//Calculate max buffer use
-											gBufferByteMaxPosition = MAX_RECORDING_SECONDS * bytesPerSecond;
-
-											//Allocate and initialize byte buffer
-											gRecordingBuffer = new Uint8[ gBufferByteSize ];
-											memset( gRecordingBuffer, 0, gBufferByteSize );
-
-											//Go on to next state
-											printf("Press 1 to record for 5 seconds.");
-											currentState = STOPPED;
-										}
-									}
-								}
-							}
-						}
-						break;
-
-					//User getting ready to record
-					case STOPPED:
-
-						//On key press
-						if( true )
-						{
-							//Start recording
-							if( true )
-							{
-								//Go back to beginning of buffer
-								gBufferBytePosition = 0;
-
-								//Start recording
-								SDL_PauseAudioDevice( recordingDeviceId, SDL_FALSE );
-
-								//Go on to next state
-								printf( "Recording...");
-								currentState = RECORDING;
-							}
-						}
-						break;
-
-					//User has finished recording
-					case RECORDED:
-
-						//On key press
-						if( true )
-						{
-							//Start playback
-							if( true )
-							{
-								//Reset the buffer
-								gBufferBytePosition = 0;
-								memset( gRecordingBuffer, 0, gBufferByteSize );
-
-								//Start recording
-								SDL_PauseAudioDevice( recordingDeviceId, SDL_FALSE );
-
-								//Go on to next state
-								printf( "Recording...");
-								currentState = RECORDING;
-							}
-							//Record again
-							if( false )
-							{
-								//Reset the buffer
-								gBufferBytePosition = 0;
-								memset( gRecordingBuffer, 0, gBufferByteSize );
-
-								//Start recording
-								SDL_PauseAudioDevice( recordingDeviceId, SDL_FALSE );
-
-								//Go on to next state
-								printf( "Recording...");
-								currentState = SELECTING_DEVICE;
-							}
-						}
-						break;
+					//Report error
+					printf( "Failed to open playback device! SDL Error: %s", SDL_GetError() );
+					printf( "Failed to open playback device!");
 				}
-
-				//Updating recording
-				if( currentState == RECORDING )
+				//Device opened successfully
+				else
 				{
-					//Lock callback
-					SDL_LockAudioDevice( recordingDeviceId );
+					//Calculate per sample bytes
+					int bytesPerSample = gReceivedRecordingSpec.channels * ( SDL_AUDIO_BITSIZE( gReceivedRecordingSpec.format ) / 8 );
 
-					//Finished recording
-					if( gBufferBytePosition > gBufferByteMaxPosition )
-					{
-						//Stop recording audio
-						SDL_PauseAudioDevice( recordingDeviceId, SDL_TRUE );
+					//Calculate bytes per second
+					int bytesPerSecond = gReceivedRecordingSpec.freq * bytesPerSample;
 
-						//Go on to next state
-						printf( "Press 1 to play back. Press 2 to record again.");
-						gBufferBytePosition = 0;
+					//Calculate buffer size
+					gBufferByteSize = RECORDING_BUFFER_SECONDS * bytesPerSecond;
 
-						//Start playback
-						SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
+					//Calculate max buffer use
+					gBufferByteMaxPosition = MAX_RECORDING_SECONDS * bytesPerSecond;
 
-						//Go on to next state
-						printf( "Playing...");
-						currentState = PLAYBACK;
-					}
-
-					//Unlock callback
-					SDL_UnlockAudioDevice( recordingDeviceId );
-				}
-				//Updating playback
-				else if( currentState == PLAYBACK )
-				{
-					//Lock callback
-					SDL_LockAudioDevice( playbackDeviceId );
-
-					//Finished playback
-					if( gBufferBytePosition > gBufferByteMaxPosition )
-					{
-						//Stop playing audio
-						SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
-
-						//Go on to next state
-						printf( "Press 1 to play back. Press 2 to record again.");
-						currentState = STOPPED;
-					}
-
-					//Unlock callback
-					SDL_UnlockAudioDevice( playbackDeviceId );
+					//Allocate and initialize byte buffer
+					gRecordingBuffer = new Uint8[ gBufferByteSize ];
+					memset( gRecordingBuffer, 0, gBufferByteSize );
 				}
 			}
 		}
 	}
+}
+//---------------------------------------------------------------------------
 
+void __fastcall TMainForm::ButtonClick(TObject *Sender)
+{
+	Packet packettype = P_KEY;
+	send(Connection, (char*)&packettype, sizeof(Packet), NULL);
+	Sleep(10);
+}
+
+//---------------------------------------------------------------------------
+
+int start()
+{
+	//Main loop flag
+	bool quit = false;
+
+	//Set the default recording state
+	RecordingState currentState = START_RECORDING;
+
+	//While application is running
+	while( !quit )
+	{
+		//Do current state event handling
+		switch( currentState )
+		{
+			//User getting ready to record
+			case START_RECORDING:
+			{
+				//Go back to beginning of buffer
+				gBufferBytePosition = 0;
+
+				//Start recording
+				SDL_PauseAudioDevice( recordingDeviceId, SDL_FALSE );
+
+				//Go on to next state
+				currentState = RECORDING;
+				break;
+			}
+
+			case RECORDING:
+			{
+				//Lock callback
+				SDL_LockAudioDevice( recordingDeviceId );
+
+				//Finished recording
+				if( gBufferBytePosition > gBufferByteMaxPosition )
+				{
+					//Stop recording audio
+					SDL_PauseAudioDevice( recordingDeviceId, SDL_TRUE );
+
+					//Go on to next state
+					gBufferBytePosition = 0;
+
+					//Start playback
+					//SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
+
+					Packet packettype = P_AUDIO;
+
+					unsigned long int msg_size = gBufferByteSize;
+					send(Connection, (char*)&packettype, sizeof(Packet), NULL);
+					Sleep(10);
+					send(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
+					Sleep(10);
+					send(Connection, gRecordingBuffer, msg_size, NULL);
+                    Sleep(10);
+
+					//Go on to next state
+					currentState = START_RECORDING;
+				}
+
+				//Unlock callback
+				SDL_UnlockAudioDevice( recordingDeviceId );
+				break;
+			}
+
+
+			//Updating playback
+			case PLAYBACK:
+			{
+				//Lock callback
+				SDL_LockAudioDevice( playbackDeviceId );
+
+				//Finished playback
+				if( gBufferBytePosition > gBufferByteMaxPosition )
+				{
+					//Stop playing audio
+					SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
+
+					//Go on to next state
+					currentState = START_RECORDING;
+				}
+
+				//Unlock callback
+				SDL_UnlockAudioDevice( playbackDeviceId );
+				break;
+			}
+		}
+	}
 	return 0;
 }
 
@@ -427,4 +403,6 @@ void __fastcall TMainForm::Button1Click(TObject *Sender)
 	start();
 }
 //---------------------------------------------------------------------------
+
+
 

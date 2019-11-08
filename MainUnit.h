@@ -9,7 +9,7 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.CheckLst.hpp>
-#include "include/SDL.h"
+#include "SDL/include/SDL.h"
 #include <Vcl.MPlayer.hpp>
 //---------------------------------------------------------------------------
 class TMainForm : public TForm
