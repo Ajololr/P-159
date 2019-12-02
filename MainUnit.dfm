@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = #1056'-159'
-  ClientHeight = 184
-  ClientWidth = 723
+  ClientHeight = 221
+  ClientWidth = 601
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,8 +15,8 @@ object MainForm: TMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
-    Left = 8
-    Top = 8
+    Left = 0
+    Top = 0
     Width = 377
     Height = 161
     Caption = #1042#1099#1073#1086#1088' '#1088#1072#1073#1086#1095#1077#1081' '#1095#1072#1089#1090#1086#1090#1099
@@ -188,8 +188,8 @@ object MainForm: TMainForm
     end
   end
   object RadioGroup1: TRadioGroup
-    Left = 391
-    Top = 8
+    Left = 383
+    Top = 0
     Width = 209
     Height = 161
     Caption = #1056#1077#1078#1080#1084' '#1088#1072#1073#1086#1090#1099
@@ -205,8 +205,8 @@ object MainForm: TMainForm
     TabOrder = 1
   end
   object Button: TButton
-    Left = 606
-    Top = 20
+    Left = 8
+    Top = 175
     Width = 109
     Height = 41
     Caption = 'T'#1051#1043' '#1082#1083#1102#1095
@@ -214,27 +214,40 @@ object MainForm: TMainForm
     OnClick = ButtonClick
   end
   object Button1: TButton
-    Left = 606
-    Top = 80
+    Left = 139
+    Top = 175
     Width = 109
-    Height = 33
+    Height = 41
     Caption = #1047#1072#1087#1080#1089#1100
     TabOrder = 3
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 606
-    Top = 136
-    Width = 109
-    Height = 33
-    Caption = #1055#1088#1080#1105#1084
+    Left = 500
+    Top = 176
+    Width = 43
+    Height = 39
     TabOrder = 4
   end
-  object MediaPlayer1: TMediaPlayer
-    Left = 656
-    Top = 184
-    Width = 253
-    Height = 30
+  object Button3: TButton
+    Left = 549
+    Top = 176
+    Width = 43
+    Height = 39
     TabOrder = 5
+  end
+  object CheckBox1: TCheckBox
+    Left = 362
+    Top = 176
+    Width = 132
+    Height = 37
+    Caption = #1042#1082#1083' / '#1042#1099#1082#1083
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 6
   end
 end

@@ -63,7 +63,7 @@ const int MAX_RECORDING_DEVICES = 10;
 const int MAX_RECORDING_SECONDS = 1;
 
 //Maximum recording time plus padding
-const int RECORDING_BUFFER_SECONDS = MAX_RECORDING_SECONDS + 1;
+const int RECORDING_BUFFER_SECONDS = MAX_RECORDING_SECONDS;
 
 //The various recording actions we can take
 enum RecordingState
@@ -161,8 +161,6 @@ bool ProcessPacket(Packet packettype) {
 				SDL_UnlockAudioDevice( playbackDeviceId );
             }
 
-
-			//delete[] msg;
 			break;
 		}
 		default:
@@ -177,7 +175,7 @@ void ClientHandler() {
 	Packet packettype;
 	while(true) {
 		recv(Connection, (char*)&packettype, sizeof(Packet), NULL);
-
+        Sleep(100);
 		if(!ProcessPacket(packettype)) {
 			break;
 		}
@@ -236,10 +234,10 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 			//Default audio spec
 			SDL_AudioSpec desiredRecordingSpec;
 			SDL_zero(desiredRecordingSpec);
-			desiredRecordingSpec.freq = 44100;
+			desiredRecordingSpec.freq = 4000;
 			desiredRecordingSpec.format = AUDIO_F32;
 			desiredRecordingSpec.channels = 2;
-			desiredRecordingSpec.samples = 4096;
+			desiredRecordingSpec.samples = 500;
 			desiredRecordingSpec.callback = audioRecordingCallback;
 
 			//Open recording device
@@ -258,10 +256,10 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 				//Default audio spec
 				SDL_AudioSpec desiredPlaybackSpec;
 				SDL_zero(desiredPlaybackSpec);
-				desiredPlaybackSpec.freq = 44100;
+				desiredPlaybackSpec.freq = 4000;
 				desiredPlaybackSpec.format = AUDIO_F32;
 				desiredPlaybackSpec.channels = 2;
-				desiredPlaybackSpec.samples = 4096;
+				desiredPlaybackSpec.samples = 500;
 				desiredPlaybackSpec.callback = audioPlaybackCallback;
 
 				//Open playback device
@@ -355,7 +353,7 @@ int start()
 
 					Packet packettype = P_AUDIO;
 
-					unsigned long int msg_size = gBufferByteSize;
+					int msg_size = gBufferByteSize;
 					send(Connection, (char*)&packettype, sizeof(Packet), NULL);
 					Sleep(10);
 					send(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
@@ -403,6 +401,7 @@ void __fastcall TMainForm::Button1Click(TObject *Sender)
 	start();
 }
 //---------------------------------------------------------------------------
+
 
 
 

@@ -1,33 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.570,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1.cbproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.628,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.dfm=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.058,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h=D:\University\3 сем\ЯПиТК\Курсовая\1\P-159PCH1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.628,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.h=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.h</Transaction>
     <Transaction>1899.12.30 00:00:00.000.439,=C:\Users\User\Desktop\SDL\lib\win32\SDL2main.lib</Transaction>
     <Transaction>1899.12.30 00:00:00.000.707,C:\Users\User\Desktop\SDL\lib\win32\SDL2main.lib=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.h=D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.137,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.331,=C:\Users\User\Desktop\SDL\lib\win64\SDL2main.lib</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.162,C:\Users\User\Desktop\SDL\lib\win64\SDL2main.lib=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.925,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.948,=D:\University\3 сем\ЯПиТК\Курсовая\P-159\SDL\lib\SDL2-bcb.lib</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.628,C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.770,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.817,=C:\Users\User\Desktop\SDL\lib\win32\SDL2.dll</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.504,=D:\University\3 сем\ЯПиТК\Курсовая\P-159\SDL\lib\win32\SDL2-bcb.lib</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.566,C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.161,C:\Users\User\Desktop\SDL\lib\win32\SDL2.dll=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.880,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj=D:\University\3 сем\ЯПиТК\Курсовая\1\P-159.cbproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.986,C:\Users\User\Desktop\SDL\lib\win32\SDL2.lib=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.535,=C:\Users\User\Desktop\SDL\lib\win32\SDL2.lib</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.628,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.cpp=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.cpp</Transaction>
     <Transaction>1899.12.30 00:00:00.000.840,=C:\Users\User\Desktop\SDL\lib\win64\SDL2.lib</Transaction>
     <Transaction>1899.12.30 00:00:00.000.211,C:\Users\User\Desktop\SDL\lib\win64\SDL2.lib=</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.cpp=D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.cpp</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.dfm=D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.907,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.628,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.cpp=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.058,D:\University\3 сем\ЯПиТК\Курсовая\1\P-159PCH1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.331,=C:\Users\User\Desktop\SDL\lib\win64\SDL2main.lib</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.162,C:\Users\User\Desktop\SDL\lib\win64\SDL2main.lib=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.948,=D:\University\3 сем\ЯПиТК\Курсовая\P-159\SDL\lib\SDL2-bcb.lib</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.880,D:\University\3 сем\ЯПиТК\Курсовая\1\P-159.cbproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.h=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.566,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159PCH1.h=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.137,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.817,=C:\Users\User\Desktop\SDL\lib\win32\SDL2.dll</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.161,C:\Users\User\Desktop\SDL\lib\win32\SDL2.dll=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.925,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.570,C:\Users\User\Documents\Embarcadero\Studio\Projects\P-159.cbproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1.cbproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.628,D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.dfm=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.770,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.535,=C:\Users\User\Desktop\SDL\lib\win32\SDL2.lib</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.986,C:\Users\User\Desktop\SDL\lib\win32\SDL2.lib=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.336,D:\University\3 сем\ЯПиТК\Курсовая\1\MainUnit.dfm=D:\University\3 сем\ЯПиТК\Курсовая\1\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.504,=D:\University\3 сем\ЯПиТК\Курсовая\P-159\SDL\lib\win32\SDL2-bcb.lib</Transaction>
     <Transaction>1899.12.30 00:00:00.000.179,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
     <Transaction>1899.12.30 00:00:00.000.627,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.907,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
   </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="MainUnit.cpp"/>
+    <File Path="MainUnit.cpp"/>
+    <File Path="MainUnit.dfm"/>
+    <File Path="MainUnit.h"/>
+    <File Path="P-159.cpp"/>
+    <File Path="P-159PCH1.h"/>
+    <File Path="SDL\lib\win32\SDL2-bcb.lib"/>
+    <File Path="SDL\lib\SDL2-bcb.lib"/>
+  </ProjectSortOrder>
 </BorlandProject>
