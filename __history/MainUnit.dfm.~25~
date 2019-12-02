@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = #1056'-159'
-  ClientHeight = 184
-  ClientWidth = 723
+  ClientHeight = 272
+  ClientWidth = 476
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,10 +14,49 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 412
+    Top = 167
+    Width = 60
+    Height = 24
+    Caption = #1053#1072#1089#1090#1088'.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 330
+    Top = 167
+    Width = 53
+    Height = 24
+    Caption = #1053#1072#1087#1088'.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 330
+    Top = 240
+    Width = 56
+    Height = 24
+    Caption = #1042#1099#1079#1086#1074
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 8
-    Width = 377
+    Top = 2
+    Width = 464
     Height = 161
     Caption = #1042#1099#1073#1086#1088' '#1088#1072#1073#1086#1095#1077#1081' '#1095#1072#1089#1090#1086#1090#1099
     Font.Charset = DEFAULT_CHARSET
@@ -27,8 +66,8 @@ object MainForm: TMainForm
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    object GroupBox2: TGroupBox
-      Left = 25
+    object gbMH: TGroupBox
+      Left = 41
       Top = 40
       Width = 136
       Height = 105
@@ -50,10 +89,12 @@ object MainForm: TMainForm
         Font.Name = 'Tahoma'
         Font.Style = []
         ItemHeight = 20
+        ItemIndex = 0
         ParentFont = False
         ParentShowHint = False
         ShowHint = False
         TabOrder = 0
+        Text = '3'
         Items.Strings = (
           '3'
           '4'
@@ -74,10 +115,12 @@ object MainForm: TMainForm
         Font.Name = 'Tahoma'
         Font.Style = []
         ItemHeight = 20
+        ItemIndex = 0
         ParentFont = False
         ParentShowHint = False
         ShowHint = False
         TabOrder = 1
+        Text = '0'
         Items.Strings = (
           '0'
           '1'
@@ -91,8 +134,8 @@ object MainForm: TMainForm
           '9')
       end
     end
-    object GroupBox3: TGroupBox
-      Left = 175
+    object gbKH: TGroupBox
+      Left = 223
       Top = 40
       Width = 185
       Height = 105
@@ -111,10 +154,12 @@ object MainForm: TMainForm
         Font.Name = 'Tahoma'
         Font.Style = []
         ItemHeight = 20
+        ItemIndex = 0
         ParentFont = False
         ParentShowHint = False
         ShowHint = False
         TabOrder = 0
+        Text = '0'
         Items.Strings = (
           '0'
           '1'
@@ -140,10 +185,12 @@ object MainForm: TMainForm
         Font.Name = 'Tahoma'
         Font.Style = []
         ItemHeight = 20
+        ItemIndex = 0
         ParentFont = False
         ParentShowHint = False
         ShowHint = False
         TabOrder = 1
+        Text = '0'
         Items.Strings = (
           '0'
           '1'
@@ -169,10 +216,12 @@ object MainForm: TMainForm
         Font.Name = 'Tahoma'
         Font.Style = []
         ItemHeight = 20
+        ItemIndex = 0
         ParentFont = False
         ParentShowHint = False
         ShowHint = False
         TabOrder = 2
+        Text = '0'
         Items.Strings = (
           '0'
           '1'
@@ -187,11 +236,11 @@ object MainForm: TMainForm
       end
     end
   end
-  object RadioGroup1: TRadioGroup
-    Left = 391
-    Top = 8
-    Width = 209
-    Height = 161
+  object rgMod: TRadioGroup
+    Left = 91
+    Top = 167
+    Width = 162
+    Height = 97
     Caption = #1056#1077#1078#1080#1084' '#1088#1072#1073#1086#1090#1099
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -203,38 +252,58 @@ object MainForm: TMainForm
       #1058#1051#1060)
     ParentFont = False
     TabOrder = 1
+    OnClick = rgModClick
   end
   object Button: TButton
-    Left = 606
-    Top = 20
-    Width = 109
-    Height = 41
+    Left = 8
+    Top = 169
+    Width = 73
+    Height = 48
     Caption = 'T'#1051#1043' '#1082#1083#1102#1095
     TabOrder = 2
     OnClick = ButtonClick
   end
-  object Button1: TButton
-    Left = 606
-    Top = 80
-    Width = 109
-    Height = 33
-    Caption = #1047#1072#1087#1080#1089#1100
+  object btnVoltage: TButton
+    Left = 334
+    Top = 197
+    Width = 43
+    Height = 39
     TabOrder = 3
-    OnClick = Button1Click
   end
-  object Button2: TButton
-    Left = 606
-    Top = 136
-    Width = 109
-    Height = 33
-    Caption = #1055#1088#1080#1105#1084
+  object btnSetFrequency: TButton
+    Left = 417
+    Top = 197
+    Width = 43
+    Height = 39
     TabOrder = 4
   end
-  object MediaPlayer1: TMediaPlayer
-    Left = 656
-    Top = 184
-    Width = 253
-    Height = 30
+  object cbEnable: TCheckBox
+    Left = 259
+    Top = 195
+    Width = 65
+    Height = 37
+    Caption = #1042#1082#1083
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 5
+    OnClick = cbEnableClick
+  end
+  object CheckBox2: TCheckBox
+    Left = 8
+    Top = 240
+    Width = 73
+    Height = 17
+    Caption = #1042#1099#1079#1086#1074
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -20
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 6
   end
 end

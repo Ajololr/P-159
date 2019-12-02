@@ -27,11 +27,20 @@ TMainForm *MainForm;
 SOCKET Connection;
 SOCKET ConnectSocket = INVALID_SOCKET;
 
+const int TLG = 0;
+const int TLF = 1;
+
 enum Packet
 {
 	P_KEY,
 	P_AUDIO
 };
+
+bool isEnabled = false;
+bool isCalling = false;
+
+int currentMod = 2;
+int frequency = 30000;
 
 //Number of available devices
 int gRecordingDeviceCount = 0;
@@ -121,47 +130,59 @@ bool loadMedia()
 }
 
 bool ProcessPacket(Packet packettype) {
+	int incomFreq;
+
 	switch(packettype) {
 		case P_KEY:
 		{
-			PlaySound(TEXT("SystemStart"), NULL, SND_ASYNC);
-			break;
+			recv(Connection, (char*)&incomFreq, sizeof(int), NULL);
+
+			if (currentMod == 0 && isEnabled && incomFreq == frequency)
+			{
+				PlaySound(TEXT("SystemStart"), NULL, SND_ASYNC);
+				break;
+			}
 		}
 		case P_AUDIO:
 		{
-			unsigned long int msg_size;
-			recv(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
-			recv(Connection, gRecordingBuffer, msg_size, NULL);
+			recv(Connection, (char*)&incomFreq, sizeof(int), NULL);
 
-			//Main loop flag
-			bool quit = false;
-
-			//Go on to next state
-			gBufferBytePosition = 0;
-
-			//Start playback
-			SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
-
-			while (!quit)
+			if (currentMod == 1 && !isCalling  && isEnabled && incomFreq == frequency)
 			{
-				//Lock callback
-				SDL_LockAudioDevice( playbackDeviceId );
+				int msg_size;
+				recv(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
+				recv(Connection, gRecordingBuffer, msg_size, NULL);
 
-				//Finished playback
-				if( gBufferBytePosition > gBufferByteMaxPosition )
+				//Main loop flag
+				bool quit = false;
+
+				//Go on to next state
+				gBufferBytePosition = 0;
+
+				//Start playback
+				SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
+
+				while (!quit)
 				{
-					//Stop playing audio
-					SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
+					//Lock callback
+					SDL_LockAudioDevice( playbackDeviceId );
 
-					//Go on to next message
-					quit = true;
+					//Finished playback
+					if( gBufferBytePosition > gBufferByteMaxPosition )
+					{
+						//Stop playing audio
+						SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
+
+						//Go on to next message
+						quit = true;
+					}
+
+					//Unlock callback
+					SDL_UnlockAudioDevice( playbackDeviceId );
 				}
 
-				//Unlock callback
-				SDL_UnlockAudioDevice( playbackDeviceId );
-            }
-
-			break;
+				break;
+			}
 		}
 		default:
 			std::cout << "Unrecognized packet: " << packettype << std::endl;
@@ -188,6 +209,100 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 {
 }
 //---------------------------------------------------------------------------
+
+int start()
+{
+	//Main loop flag
+	bool quit = false;
+
+	//Set the default recording state
+	RecordingState currentState = START_RECORDING;
+
+	//While application is running
+	while( !quit )
+	{
+		//Do current state event handling
+		switch( currentState )
+		{
+			//User getting ready to record
+			case START_RECORDING:
+			{
+				//Go back to beginning of buffer
+				gBufferBytePosition = 0;
+
+				//Start recording
+				SDL_PauseAudioDevice( recordingDeviceId, SDL_FALSE );
+
+				//Go on to next state
+				currentState = RECORDING;
+				break;
+			}
+
+			case RECORDING:
+			{
+				//Lock callback
+				SDL_LockAudioDevice( recordingDeviceId );
+
+				//Finished recording
+				if( gBufferBytePosition > gBufferByteMaxPosition )
+				{
+					//Stop recording audio
+					SDL_PauseAudioDevice( recordingDeviceId, SDL_TRUE );
+
+					//Go on to next state
+					gBufferBytePosition = 0;
+
+					//Start playback
+					//SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
+
+					if (currentMod == 1 && isCalling && isEnabled)
+					{
+						Packet packettype = P_AUDIO;
+
+						int msg_size = gBufferByteSize;
+						send(Connection, (char*)&packettype, sizeof(Packet), NULL);
+						Sleep(10);
+						send(Connection, (char*)&frequency, sizeof(int), NULL);
+						send(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
+						Sleep(10);
+						send(Connection, gRecordingBuffer, msg_size, NULL);
+						Sleep(10);
+					}
+
+					//Go on to next state
+					currentState = START_RECORDING;
+				}
+
+				//Unlock callback
+				SDL_UnlockAudioDevice( recordingDeviceId );
+				break;
+			}
+
+
+			//Updating playback
+			case PLAYBACK:
+			{
+				//Lock callback
+				SDL_LockAudioDevice( playbackDeviceId );
+
+				//Finished playback
+				if( gBufferBytePosition > gBufferByteMaxPosition )
+				{
+					//Stop playing audio
+					SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
+
+					//Go on to next state
+					currentState = START_RECORDING;
+				}
+
+				//Unlock callback
+				SDL_UnlockAudioDevice( playbackDeviceId );
+				break;
+			}
+		}
+	}
+	return 0;
+}
 
 void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
@@ -294,114 +409,57 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 			}
 		}
 	}
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)start, NULL, NULL, NULL);
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TMainForm::ButtonClick(TObject *Sender)
 {
-	Packet packettype = P_KEY;
-	send(Connection, (char*)&packettype, sizeof(Packet), NULL);
-	Sleep(10);
+	if (currentMod == 0 && isEnabled) {
+		Packet packettype = P_KEY;
+		send(Connection, (char*)&packettype, sizeof(Packet), NULL);
+		send(Connection, (char*)&frequency, sizeof(int), NULL);
+		Sleep(10);
+	}
 }
 
 //---------------------------------------------------------------------------
 
-int start()
+void __fastcall TMainForm::rgModClick(TObject *Sender)
 {
-	//Main loop flag
-	bool quit = false;
-
-	//Set the default recording state
-	RecordingState currentState = START_RECORDING;
-
-	//While application is running
-	while( !quit )
+	switch (rgMod->ItemIndex)
 	{
-		//Do current state event handling
-		switch( currentState )
+		case TLG:
 		{
-			//User getting ready to record
-			case START_RECORDING:
-			{
-				//Go back to beginning of buffer
-				gBufferBytePosition = 0;
+			currentMod = TLG;
+			break;
+		}
 
-				//Start recording
-				SDL_PauseAudioDevice( recordingDeviceId, SDL_FALSE );
-
-				//Go on to next state
-				currentState = RECORDING;
-				break;
-			}
-
-			case RECORDING:
-			{
-				//Lock callback
-				SDL_LockAudioDevice( recordingDeviceId );
-
-				//Finished recording
-				if( gBufferBytePosition > gBufferByteMaxPosition )
-				{
-					//Stop recording audio
-					SDL_PauseAudioDevice( recordingDeviceId, SDL_TRUE );
-
-					//Go on to next state
-					gBufferBytePosition = 0;
-
-					//Start playback
-					//SDL_PauseAudioDevice( playbackDeviceId, SDL_FALSE );
-
-					Packet packettype = P_AUDIO;
-
-					int msg_size = gBufferByteSize;
-					send(Connection, (char*)&packettype, sizeof(Packet), NULL);
-					Sleep(10);
-					send(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
-					Sleep(10);
-					send(Connection, gRecordingBuffer, msg_size, NULL);
-                    Sleep(10);
-
-					//Go on to next state
-					currentState = START_RECORDING;
-				}
-
-				//Unlock callback
-				SDL_UnlockAudioDevice( recordingDeviceId );
-				break;
-			}
-
-
-			//Updating playback
-			case PLAYBACK:
-			{
-				//Lock callback
-				SDL_LockAudioDevice( playbackDeviceId );
-
-				//Finished playback
-				if( gBufferBytePosition > gBufferByteMaxPosition )
-				{
-					//Stop playing audio
-					SDL_PauseAudioDevice( playbackDeviceId, SDL_TRUE );
-
-					//Go on to next state
-					currentState = START_RECORDING;
-				}
-
-				//Unlock callback
-				SDL_UnlockAudioDevice( playbackDeviceId );
-				break;
-			}
+		case TLF:
+		{
+			currentMod = TLF;
+			break;
 		}
 	}
-	return 0;
 }
+//---------------------------------------------------------------------------
 
-void __fastcall TMainForm::Button1Click(TObject *Sender)
+void __fastcall TMainForm::cbEnableClick(TObject *Sender)
 {
-	start();
+	isEnabled = !isEnabled;
 }
 //---------------------------------------------------------------------------
 
 
+void __fastcall TMainForm::CheckBox2Click(TObject *Sender)
+{
+    isCalling = !isCalling;
+}
+//---------------------------------------------------------------------------
 
+void __fastcall TMainForm::btnSetFrequencyClick(TObject *Sender)
+{
+	frequency = cbMTenth->Text.ToInt() * 10000 + cbMOnes->Text.ToInt() * 1000 + cbKHundred->Text.ToInt() * 100 + cbKTenth->Text.ToInt() * 10 + cbKOnes->Text.ToInt() * 1;
+}
+//---------------------------------------------------------------------------
 

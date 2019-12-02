@@ -27,11 +27,20 @@ TMainForm *MainForm;
 SOCKET Connection;
 SOCKET ConnectSocket = INVALID_SOCKET;
 
+const int TLG = 0;
+const int TLF = 1;
+
 enum Packet
 {
 	P_KEY,
 	P_AUDIO
 };
+
+bool isEnabled = false;
+bool isCalling = false;
+
+int currentMod = 2;
+int frequency = 30000;
 
 //Number of available devices
 int gRecordingDeviceCount = 0;
@@ -161,8 +170,6 @@ bool ProcessPacket(Packet packettype) {
 				SDL_UnlockAudioDevice( playbackDeviceId );
             }
 
-
-			//delete[] msg;
 			break;
 		}
 		default:
@@ -177,7 +184,7 @@ void ClientHandler() {
 	Packet packettype;
 	while(true) {
 		recv(Connection, (char*)&packettype, sizeof(Packet), NULL);
-
+        Sleep(100);
 		if(!ProcessPacket(packettype)) {
 			break;
 		}
@@ -189,123 +196,6 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
 	: TForm(Owner)
 {
 }
-//---------------------------------------------------------------------------
-
-void __fastcall TMainForm::FormCreate(TObject *Sender)
-{
-	WSAData wsaData;
-	WORD DLLVersion = MAKEWORD(2, 1);
-	if(WSAStartup(DLLVersion, &wsaData) != 0) {
-		std::cout << "Error" << std::endl;
-		exit(1);
-	}
-
-	SOCKADDR_IN addr;
-	int sizeofaddr = sizeof(addr);
-	addr.sin_addr.s_addr = inet_addr("192.168.100.3");
-	addr.sin_port = htons(4980);
-	addr.sin_family = AF_INET;
-
-	Connection = socket(AF_INET, SOCK_STREAM, NULL);
-	if(connect(Connection, (SOCKADDR*)&addr, sizeof(addr)) != 0) {
-		std::cout << "Error: failed connect to server.\n";
-	}
-	std::cout << "Connected!\n";
-
-	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandler, NULL, NULL, NULL);
-
-	if(SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0)
-	{
-		printf( "Failed to initialize!\n" );
-	}
-	else
-	{
-		//Load media
-		if( !loadMedia() )
-		{
-			printf( "Failed to load media!\n" );
-		}
-		else
-		{
-			//Main loop flag
-			bool quit = false;
-
-			//Get selection index
-			int index = 0;
-
-			//Default audio spec
-			SDL_AudioSpec desiredRecordingSpec;
-			SDL_zero(desiredRecordingSpec);
-			desiredRecordingSpec.freq = 4000;
-			desiredRecordingSpec.format = AUDIO_F32;
-			desiredRecordingSpec.channels = 2;
-			desiredRecordingSpec.samples = 1000;
-			desiredRecordingSpec.callback = audioRecordingCallback;
-
-			//Open recording device
-			recordingDeviceId = SDL_OpenAudioDevice( SDL_GetAudioDeviceName( index, SDL_TRUE ), SDL_TRUE, &desiredRecordingSpec, &gReceivedRecordingSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
-
-			//Device failed to open
-			if( recordingDeviceId == 0 )
-			{
-				//Report error
-				printf( "Failed to open recording device! SDL Error: %s", SDL_GetError() );
-				printf( "Failed to open recording device!");
-			}
-			//Device opened successfully
-			else
-			{
-				//Default audio spec
-				SDL_AudioSpec desiredPlaybackSpec;
-				SDL_zero(desiredPlaybackSpec);
-				desiredPlaybackSpec.freq = 4000;
-				desiredPlaybackSpec.format = AUDIO_F32;
-				desiredPlaybackSpec.channels = 2;
-				desiredPlaybackSpec.samples = 1000;
-				desiredPlaybackSpec.callback = audioPlaybackCallback;
-
-				//Open playback device
-				playbackDeviceId = SDL_OpenAudioDevice( NULL, SDL_FALSE, &desiredPlaybackSpec, &gReceivedPlaybackSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
-
-				//Device failed to open
-				if( playbackDeviceId == 0 )
-				{
-					//Report error
-					printf( "Failed to open playback device! SDL Error: %s", SDL_GetError() );
-					printf( "Failed to open playback device!");
-				}
-				//Device opened successfully
-				else
-				{
-					//Calculate per sample bytes
-					int bytesPerSample = gReceivedRecordingSpec.channels * ( SDL_AUDIO_BITSIZE( gReceivedRecordingSpec.format ) / 8 );
-
-					//Calculate bytes per second
-					int bytesPerSecond = gReceivedRecordingSpec.freq * bytesPerSample;
-
-					//Calculate buffer size
-					gBufferByteSize = RECORDING_BUFFER_SECONDS * bytesPerSecond;
-
-					//Calculate max buffer use
-					gBufferByteMaxPosition = MAX_RECORDING_SECONDS * bytesPerSecond;
-
-					//Allocate and initialize byte buffer
-					gRecordingBuffer = new Uint8[ gBufferByteSize ];
-					memset( gRecordingBuffer, 0, gBufferByteSize );
-				}
-			}
-		}
-	}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TMainForm::ButtonClick(TObject *Sender)
-{
-	Packet packettype = P_KEY;
-	send(Connection, (char*)&packettype, sizeof(Packet), NULL);
-	Sleep(10);
-}
-
 //---------------------------------------------------------------------------
 
 int start()
@@ -355,7 +245,7 @@ int start()
 
 					Packet packettype = P_AUDIO;
 
-					unsigned long int msg_size = gBufferByteSize;
+					int msg_size = gBufferByteSize;
 					send(Connection, (char*)&packettype, sizeof(Packet), NULL);
 					Sleep(10);
 					send(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
@@ -398,11 +288,148 @@ int start()
 	return 0;
 }
 
-void __fastcall TMainForm::Button1Click(TObject *Sender)
+void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
-	start();
+	WSAData wsaData;
+	WORD DLLVersion = MAKEWORD(2, 1);
+	if(WSAStartup(DLLVersion, &wsaData) != 0) {
+		std::cout << "Error" << std::endl;
+		exit(1);
+	}
+
+	SOCKADDR_IN addr;
+	int sizeofaddr = sizeof(addr);
+	addr.sin_addr.s_addr = inet_addr("192.168.100.3");
+	addr.sin_port = htons(4980);
+	addr.sin_family = AF_INET;
+
+	Connection = socket(AF_INET, SOCK_STREAM, NULL);
+	if(connect(Connection, (SOCKADDR*)&addr, sizeof(addr)) != 0) {
+		std::cout << "Error: failed connect to server.\n";
+	}
+	std::cout << "Connected!\n";
+
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandler, NULL, NULL, NULL);
+
+	if(SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0)
+	{
+		printf( "Failed to initialize!\n" );
+	}
+	else
+	{
+		//Load media
+		if( !loadMedia() )
+		{
+			printf( "Failed to load media!\n" );
+		}
+		else
+		{
+			//Main loop flag
+			bool quit = false;
+
+			//Get selection index
+			int index = 0;
+
+			//Default audio spec
+			SDL_AudioSpec desiredRecordingSpec;
+			SDL_zero(desiredRecordingSpec);
+			desiredRecordingSpec.freq = 4000;
+			desiredRecordingSpec.format = AUDIO_F32;
+			desiredRecordingSpec.channels = 2;
+			desiredRecordingSpec.samples = 500;
+			desiredRecordingSpec.callback = audioRecordingCallback;
+
+			//Open recording device
+			recordingDeviceId = SDL_OpenAudioDevice( SDL_GetAudioDeviceName( index, SDL_TRUE ), SDL_TRUE, &desiredRecordingSpec, &gReceivedRecordingSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
+
+			//Device failed to open
+			if( recordingDeviceId == 0 )
+			{
+				//Report error
+				printf( "Failed to open recording device! SDL Error: %s", SDL_GetError() );
+				printf( "Failed to open recording device!");
+			}
+			//Device opened successfully
+			else
+			{
+				//Default audio spec
+				SDL_AudioSpec desiredPlaybackSpec;
+				SDL_zero(desiredPlaybackSpec);
+				desiredPlaybackSpec.freq = 4000;
+				desiredPlaybackSpec.format = AUDIO_F32;
+				desiredPlaybackSpec.channels = 2;
+				desiredPlaybackSpec.samples = 500;
+				desiredPlaybackSpec.callback = audioPlaybackCallback;
+
+				//Open playback device
+				playbackDeviceId = SDL_OpenAudioDevice( NULL, SDL_FALSE, &desiredPlaybackSpec, &gReceivedPlaybackSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
+
+				//Device failed to open
+				if( playbackDeviceId == 0 )
+				{
+					//Report error
+					printf( "Failed to open playback device! SDL Error: %s", SDL_GetError() );
+					printf( "Failed to open playback device!");
+				}
+				//Device opened successfully
+				else
+				{
+					//Calculate per sample bytes
+					int bytesPerSample = gReceivedRecordingSpec.channels * ( SDL_AUDIO_BITSIZE( gReceivedRecordingSpec.format ) / 8 );
+
+					//Calculate bytes per second
+					int bytesPerSecond = gReceivedRecordingSpec.freq * bytesPerSample;
+
+					//Calculate buffer size
+					gBufferByteSize = RECORDING_BUFFER_SECONDS * bytesPerSecond;
+
+					//Calculate max buffer use
+					gBufferByteMaxPosition = MAX_RECORDING_SECONDS * bytesPerSecond;
+
+					//Allocate and initialize byte buffer
+					gRecordingBuffer = new Uint8[ gBufferByteSize ];
+					memset( gRecordingBuffer, 0, gBufferByteSize );
+				}
+			}
+		}
+	}
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)start, NULL, NULL, NULL);
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TMainForm::ButtonClick(TObject *Sender)
+{
+	if
+	Packet packettype = P_KEY;
+	send(Connection, (char*)&packettype, sizeof(Packet), NULL);
+	Sleep(10);
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::rgModClick(TObject *Sender)
+{
+	switch (rgMod->ItemIndex)
+	{
+		case TLG:
+		{
+			currentMode = P_KEY;
+			break;
+		}
+
+		case TLF:
+		{
+			currentMode = P_AUDIO;
+			break;
+		}
+	}
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMainForm::cbEnableClick(TObject *Sender)
+{
+    isEnabled = !isEnabled;
+}
+//---------------------------------------------------------------------------
 
 

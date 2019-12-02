@@ -27,7 +27,8 @@ __published:	// IDE-managed Components
 	TComboBox *ComboBox6;
 	TButton *Button1;
 	TButton *Button2;
-	TMediaPlayer *MediaPlayer1;
+	TButton *Button3;
+	TCheckBox *CheckBox1;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall ButtonClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
