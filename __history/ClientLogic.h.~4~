@@ -1,0 +1,9 @@
+//---------------------------------------------------------------------------
+#include "MainUnit.h"
+
+#ifndef ClientLogicH
+#define ClientLogicH
+//---------------------------------------------------------------------------
+
+int connectToServer(char *IP, int Port);
+#endif

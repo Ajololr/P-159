@@ -9,8 +9,10 @@
 #include <Vcl.Forms.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.CheckLst.hpp>
+#include <Vcl.Dialogs.hpp>
 #include "SDL/include/SDL.h"
 #include <Vcl.MPlayer.hpp>
+#include "ClientLogic.h"
 //---------------------------------------------------------------------------
 class TMainForm : public TForm
 {
@@ -25,24 +27,28 @@ __published:	// IDE-managed Components
 	TComboBox *cbKHundred;
 	TComboBox *cbKTenth;
 	TComboBox *cbKOnes;
-	TButton *btnVoltage;
 	TButton *btnSetFrequency;
 	TCheckBox *cbEnable;
 	TLabel *Label1;
+	TCheckBox *CheckBox2;
+	TEdit *IPEdt;
+	TEdit *PortEdt;
 	TLabel *Label2;
 	TLabel *Label3;
-	TCheckBox *CheckBox2;
+	TButton *ConnectBtn;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall ButtonClick(TObject *Sender);
 	void __fastcall rgModClick(TObject *Sender);
 	void __fastcall cbEnableClick(TObject *Sender);
 	void __fastcall CheckBox2Click(TObject *Sender);
 	void __fastcall btnSetFrequencyClick(TObject *Sender);
+	void __fastcall ConnectBtnClick(TObject *Sender);
 
-private:	// User declarations
-public:		// User declarations
+	private:	// User declarations
+	public:		// User declarations
 	__fastcall TMainForm(TComponent* Owner);
 };
+
 //---------------------------------------------------------------------------
 extern PACKAGE TMainForm *MainForm;
 //---------------------------------------------------------------------------
