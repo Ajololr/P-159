@@ -1,9 +1,11 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = #1056'-159'
-  ClientHeight = 272
-  ClientWidth = 617
+  ClientHeight = 282
+  ClientWidth = 627
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -62,7 +64,7 @@ object MainForm: TMainForm
       Caption = #1052#1043#1094
       TabOrder = 0
       object cbMTenth: TComboBox
-        Left = 16
+        Left = 8
         Top = 51
         Width = 40
         Height = 26
@@ -91,7 +93,7 @@ object MainForm: TMainForm
           '7')
       end
       object cbMOnes: TComboBox
-        Left = 73
+        Left = 77
         Top = 51
         Width = 40
         Height = 26
@@ -260,7 +262,7 @@ object MainForm: TMainForm
     OnClick = btnSetFrequencyClick
   end
   object cbEnable: TCheckBox
-    Left = 315
+    Left = 306
     Top = 195
     Width = 65
     Height = 37

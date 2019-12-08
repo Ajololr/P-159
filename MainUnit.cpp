@@ -34,7 +34,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
 	if(SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0)
 	{
-		MessageDlg("Failed to initialize!", mtError, TMsgDlgButtons()<<mbOK, 0);
+		MessageDlg("Failed to initialize SDL!", mtError, TMsgDlgButtons()<<mbOK, 0);
 	}
 	else
 	{
@@ -83,13 +83,13 @@ void __fastcall TMainForm::rgModClick(TObject *Sender)
 	{
 		case TLG:
 		{
-			currentMod = TLG;
+			toggleMod(TLG);
 			break;
 		}
 
 		case TLF:
 		{
-			currentMod = TLF;
+			toggleMod(TLF);
 			break;
 		}
 	}
@@ -98,13 +98,13 @@ void __fastcall TMainForm::rgModClick(TObject *Sender)
 
 void __fastcall TMainForm::cbEnableClick(TObject *Sender)
 {
-	isEnabled = !isEnabled;
+	toggleEnabled();
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TMainForm::CheckBox2Click(TObject *Sender)
 {
-    isCalling = !isCalling;
+    toggleCalling();
 }
 //---------------------------------------------------------------------------
 
@@ -119,4 +119,5 @@ void __fastcall TMainForm::ConnectBtnClick(TObject *Sender)
 	connectToServer(AnsiString(IPEdt->Text).c_str(), PortEdt->Text.ToInt());
 }
 //---------------------------------------------------------------------------
+
 

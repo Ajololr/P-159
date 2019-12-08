@@ -9,8 +9,8 @@ SOCKET ConnectSocket = INVALID_SOCKET;
 
 const int TLG = 0;
 const int TLF = 1;
-bool isEnabled = false;
-bool isCalling = false;
+int isEnabled = 0;
+int isCalling = 0;
 int currentMod = 2;
 int frequency = 30000;
 
@@ -21,4 +21,7 @@ bool loadPlaybackDevice();
 void sendTLG();
 void initBuffer();
 void ClientHandler();
+void toggleEnabled();
+void toggleCalling();
+void toggleMod(int mod);
 #endif

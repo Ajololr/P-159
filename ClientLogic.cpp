@@ -122,10 +122,8 @@ void sendAudio()
 
 	int msg_size = gBufferByteSize;
 	send(Connection, (char*)&packettype, sizeof(Packet), NULL);
-	Sleep(10);
 	send(Connection, (char*)&frequency, sizeof(int), NULL);
 	send(Connection, (char*)&msg_size, sizeof(unsigned long int), NULL);
-	Sleep(10);
 	send(Connection, gRecordingBuffer, msg_size, NULL);
 	Sleep(10);
 }
@@ -219,7 +217,7 @@ void initBuffer()
 	gRecordingBuffer = new Uint8[ gBufferByteSize ];
 	memset( gRecordingBuffer, 0, gBufferByteSize );
 
-	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)startRecording, NULL, NULL, NULL);
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)initRecording, NULL, NULL, NULL);
 }
 
 bool loadMedia()
@@ -293,7 +291,7 @@ bool ProcessPacket(Packet packettype) {
 
 			if (currentMod == 0 && isEnabled && incomFreq == frequency)
 			{
-				PlaySound(TEXT("SystemStart"), NULL, SND_ASYNC);
+				PlaySound(TEXT("TLG.wav"), NULL, SND_ASYNC);
 				break;
 			}
 		}
@@ -336,13 +334,28 @@ void ClientHandler() {
 	closesocket(Connection);
 }
 
+void toggleEnabled()
+{
+    isEnabled = !isEnabled;
+}
+
+void toggleMod(int mod)
+{
+	currentMod = mod;
+}
+
+void toggleCalling()
+{
+	isCalling = !isCalling;;
+}
+
 int connectToServer(char *IP, int Port)
 {
 	WSAData wsaData;
 	WORD DLLVersion = MAKEWORD(2, 1);
 	if(WSAStartup(DLLVersion, &wsaData) != 0)
 	{
-		//MessageDlg("Error", mtInformation, TMsgDlgButtons() << mbOK, 0);
+		exit(1);
 	}
 
 	SOCKADDR_IN addr;
@@ -354,7 +367,6 @@ int connectToServer(char *IP, int Port)
 	Connection = socket(AF_INET, SOCK_STREAM, NULL);
 	if (connect(Connection, (SOCKADDR*)&addr, sizeof(addr)) != 0)
 	{
-		//MessageDlg("Error", mtInformation, TMsgDlgButtons() << mbOK, 0);
 		exit(1);
 	}
 
