@@ -12,7 +12,9 @@ object MainForm: TMainForm
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = MainMenu
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -315,5 +317,13 @@ object MainForm: TMainForm
     Caption = #1055#1086#1076#1082#1083#1102#1095#1080#1090#1100#1089#1103
     TabOrder = 8
     OnClick = ConnectBtnClick
+  end
+  object MainMenu: TMainMenu
+    Left = 496
+    Top = 200
+    object Help: TMenuItem
+      Caption = #1055#1086#1084#1086#1097#1100
+      OnClick = HelpClick
+    end
   end
 end

@@ -13,6 +13,7 @@
 #include "SDL/include/SDL.h"
 #include <Vcl.MPlayer.hpp>
 #include "ClientLogic.h"
+#include <Vcl.Menus.hpp>
 //---------------------------------------------------------------------------
 class TMainForm : public TForm
 {
@@ -36,6 +37,8 @@ __published:	// IDE-managed Components
 	TLabel *Label2;
 	TLabel *Label3;
 	TButton *ConnectBtn;
+	TMainMenu *MainMenu;
+	TMenuItem *Help;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall ButtonClick(TObject *Sender);
 	void __fastcall rgModClick(TObject *Sender);
@@ -43,6 +46,7 @@ __published:	// IDE-managed Components
 	void __fastcall CheckBox2Click(TObject *Sender);
 	void __fastcall btnSetFrequencyClick(TObject *Sender);
 	void __fastcall ConnectBtnClick(TObject *Sender);
+	void __fastcall HelpClick(TObject *Sender);
 
 	private:	// User declarations
 	public:		// User declarations

@@ -22,6 +22,15 @@ enum Packet
 };
 
 int gRecordingDeviceCount = 0;
+int frequency = 30000;
+int currentMod = 2;
+int isCalling = 0;
+int isEnabled = 0;
+
+const int DEVICE_FREQUENCY = 4000;
+const int DEVICE_CHANNELS = 2;
+const int DEVICE_SAMPLES = 500;
+
 
 //Recieved audio spec
 SDL_AudioSpec gReceivedRecordingSpec;
@@ -49,18 +58,11 @@ const int MAX_RECORDING_DEVICES = 10;
 //Maximum recording time
 const int MAX_RECORDING_SECONDS = 1;
 
-//Maximum recording time plus padding
-const int RECORDING_BUFFER_SECONDS = MAX_RECORDING_SECONDS;
-
 //The various recording actions we can take
-enum RecordingState
+enum recordingState
 {
-	SETTING_DEVICE,
 	START_RECORDING,
-	RECORDING,
-	START_PLAYBACK,
-	PLAYBACK,
-	AUDIO_ERROR
+	RECORDING
 };
 
 void audioRecordingCallback( void* userdata, Uint8* stream, int len )
@@ -81,19 +83,24 @@ void audioPlaybackCallback( void* userdata, Uint8* stream, int len)
 	gBufferBytePosition += len;
 }
 
+SDL_AudioSpec getAudioDevice(SDL_AudioSpec device)
+{
+	SDL_zero(device);
+	device.freq = DEVICE_FREQUENCY;
+	device.format = AUDIO_F32;
+	device.channels = DEVICE_CHANNELS;
+	device.samples = DEVICE_SAMPLES;
+	device.callback = audioRecordingCallback;
+
+	return device;
+}
+
 bool loadRecordingDevice()
 {
 	//Get selection index
-	int index = 0;
+	const int index = 0;
 
-	//Default audio spec
-	SDL_AudioSpec desiredRecordingSpec;
-	SDL_zero(desiredRecordingSpec);
-	desiredRecordingSpec.freq = 4000;
-	desiredRecordingSpec.format = AUDIO_F32;
-	desiredRecordingSpec.channels = 2;
-	desiredRecordingSpec.samples = 500;
-	desiredRecordingSpec.callback = audioRecordingCallback;
+	SDL_AudioSpec desiredRecordingSpec = getAudioDevice(desiredRecordingSpec);
 
 	//Open recording device
 	recordingDeviceId = SDL_OpenAudioDevice( SDL_GetAudioDeviceName( index, SDL_TRUE ), SDL_TRUE, &desiredRecordingSpec, &gReceivedRecordingSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
@@ -102,14 +109,7 @@ bool loadRecordingDevice()
 
 bool loadPlaybackDevice()
 {
-	//Default audio spec
-	SDL_AudioSpec desiredPlaybackSpec;
-	SDL_zero(desiredPlaybackSpec);
-	desiredPlaybackSpec.freq = 4000;
-	desiredPlaybackSpec.format = AUDIO_F32;
-	desiredPlaybackSpec.channels = 2;
-	desiredPlaybackSpec.samples = 500;
-	desiredPlaybackSpec.callback = audioPlaybackCallback;
+	SDL_AudioSpec desiredPlaybackSpec = getAudioDevice(desiredPlaybackSpec);
 
 	//Open playback device
 	playbackDeviceId = SDL_OpenAudioDevice( NULL, SDL_FALSE, &desiredPlaybackSpec, &gReceivedPlaybackSpec, SDL_AUDIO_ALLOW_FORMAT_CHANGE );
@@ -170,7 +170,7 @@ int initRecording()
 	bool quit = false;
 
 	//Set the default recording state
-	RecordingState currentState = START_RECORDING;
+	recordingState currentState = START_RECORDING;
 
 	//While application is running
 	while( !quit )
@@ -208,7 +208,7 @@ void initBuffer()
 	int bytesPerSecond = gReceivedRecordingSpec.freq * bytesPerSample;
 
 	//Calculate buffer size
-	gBufferByteSize = RECORDING_BUFFER_SECONDS * bytesPerSecond;
+	gBufferByteSize = MAX_RECORDING_SECONDS * bytesPerSecond;
 
 	//Calculate max buffer use
 	gBufferByteMaxPosition = MAX_RECORDING_SECONDS * bytesPerSecond;
@@ -281,10 +281,11 @@ void playAudio()
 	}
 }
 
-bool ProcessPacket(Packet packettype) {
+bool processPacket(Packet packettype) {
 	int incomFreq;
 
-	switch(packettype) {
+	switch(packettype)
+	{
 		case P_KEY:
 		{
 			recv(Connection, (char*)&incomFreq, sizeof(int), NULL);
@@ -314,7 +315,8 @@ bool ProcessPacket(Packet packettype) {
 
 void sendTLG()
 {
-	if (currentMod == 0 && isEnabled) {
+	if (currentMod == 0 && isEnabled)
+	{
 		Packet packettype = P_KEY;
 		send(Connection, (char*)&packettype, sizeof(Packet), NULL);
 		send(Connection, (char*)&frequency, sizeof(int), NULL);
@@ -322,12 +324,15 @@ void sendTLG()
 	}
 }
 
-void ClientHandler() {
+void clientHandler()
+{
 	Packet packettype;
-	while(true) {
+	while(true)
+	{
 		recv(Connection, (char*)&packettype, sizeof(Packet), NULL);
         Sleep(100);
-		if(!ProcessPacket(packettype)) {
+		if(!processPacket(packettype))
+		{
 			break;
 		}
 	}
@@ -347,6 +352,11 @@ void toggleMod(int mod)
 void toggleCalling()
 {
 	isCalling = !isCalling;;
+}
+
+void setFrequency(int MTenth, int MOnes, int KHundred, int KTenth, int KOnes)
+{
+	frequency = MTenth * 10000 + MOnes * 1000 + KHundred * 100 + KTenth * 10 + KOnes * 1;
 }
 
 int connectToServer(char *IP, int Port)
@@ -370,6 +380,6 @@ int connectToServer(char *IP, int Port)
 		exit(1);
 	}
 
-	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)ClientHandler, NULL, NULL, NULL);
+	CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)clientHandler, NULL, NULL, NULL);
 }
 

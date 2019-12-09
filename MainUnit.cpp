@@ -34,14 +34,14 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 {
 	if(SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0)
 	{
-		MessageDlg("Failed to initialize SDL!", mtError, TMsgDlgButtons()<<mbOK, 0);
+		MessageDlg("Ошибка инициализации SDL!", mtError, TMsgDlgButtons()<<mbOK, 0);
 	}
 	else
 	{
 		//Load media
 		if( !loadMedia() )
 		{
-			MessageDlg("Failed to load media!", mtError, TMsgDlgButtons()<<mbOK, 0);
+			MessageDlg("Не удалось определить аудиоустройства!", mtError, TMsgDlgButtons()<<mbOK, 0);
 		}
 		else
 		{
@@ -49,7 +49,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 			if( loadRecordingDevice() )
 			{
 				//Report error
-				MessageDlg("Failed to open recording device!", mtError, TMsgDlgButtons()<<mbOK, 0);
+				MessageDlg("Не удалось обратиться к записывающему устройству!", mtError, TMsgDlgButtons()<<mbOK, 0);
 			}
 			//Device opened successfully
 			else
@@ -58,7 +58,7 @@ void __fastcall TMainForm::FormCreate(TObject *Sender)
 				if( loadPlaybackDevice()  )
 				{
 					//Report error
-					MessageDlg("Failed to open playback device!", mtInformation, TMsgDlgButtons() << mbOK, 0);
+					MessageDlg("Не удалось обратиться к воспроизводящему устройству!", mtInformation, TMsgDlgButtons() << mbOK, 0);
 				}
 				//Device opened successfully
 				else
@@ -110,7 +110,7 @@ void __fastcall TMainForm::CheckBox2Click(TObject *Sender)
 
 void __fastcall TMainForm::btnSetFrequencyClick(TObject *Sender)
 {
-	frequency = cbMTenth->Text.ToInt() * 10000 + cbMOnes->Text.ToInt() * 1000 + cbKHundred->Text.ToInt() * 100 + cbKTenth->Text.ToInt() * 10 + cbKOnes->Text.ToInt() * 1;
+	setFrequency(cbMTenth->Text.ToInt(), cbMOnes->Text.ToInt(), cbKHundred->Text.ToInt(), cbKTenth->Text.ToInt(), cbKOnes->Text.ToInt());
 }
 //---------------------------------------------------------------------------
 
@@ -120,4 +120,10 @@ void __fastcall TMainForm::ConnectBtnClick(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TMainForm::HelpClick(TObject *Sender)
+{
+	MessageDlg("Начальное состояние:\n– checkBox «Вкл» в выключенном состоянии;\n– checkBox «Вызов» в выключенном состоянии.\nПорядок настройки:\n2. В поля IP адреса и порта ввести данные о сервере;\n2. Нажать на кнопку «Подключиться»;\n3. Выбрать предпочитаемую частоту;\n4. Выбрать режим передачи;\n5. Нажать на кнопку «Вкл»;\n6. Нажать на кнопку «Настр.»", mtInformation, TMsgDlgButtons()<<mbOK, 0);
+}
+//---------------------------------------------------------------------------
 
