@@ -306,8 +306,6 @@ bool processPacket(Packet packettype) {
 				break;
 			}
 		}
-		default:
-			break;
 	}
 
 	return true;
@@ -359,7 +357,7 @@ void setFrequency(int MTenth, int MOnes, int KHundred, int KTenth, int KOnes)
 	frequency = MTenth * 10000 + MOnes * 1000 + KHundred * 100 + KTenth * 10 + KOnes * 1;
 }
 
-int connectToServer(char *IP, int Port)
+void connectToServer(char *IP, int Port)
 {
 	WSAData wsaData;
 	WORD DLLVersion = MAKEWORD(2, 1);
@@ -369,7 +367,6 @@ int connectToServer(char *IP, int Port)
 	}
 
 	SOCKADDR_IN addr;
-	int sizeofaddr = sizeof(addr);
 	addr.sin_addr.s_addr = inet_addr(IP);
 	addr.sin_port = htons(Port);
 	addr.sin_family = AF_INET;

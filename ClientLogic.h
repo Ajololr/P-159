@@ -10,7 +10,7 @@ SOCKET ConnectSocket = INVALID_SOCKET;
 const int TLG = 0;
 const int TLF = 1;
 
-int connectToServer(char *IP, int Port);
+void connectToServer(char *IP, int Port);
 bool loadMedia();
 bool loadRecordingDevice();
 bool loadPlaybackDevice();

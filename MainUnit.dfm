@@ -294,7 +294,7 @@ object MainForm: TMainForm
     OnClick = CheckBox2Click
   end
   object IPEdt: TEdit
-    Left = 488
+    Left = 486
     Top = 38
     Width = 121
     Height = 21
